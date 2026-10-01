@@ -1,4 +1,4 @@
-""""Live webcam object detection using Faster R-CNN or YOLOv3.
+"""Live webcam object detection using Faster R-CNN or YOLOv3.
 
 Run from the project root:
     python -m src.live_detect --model yolo
@@ -88,4 +88,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-"
