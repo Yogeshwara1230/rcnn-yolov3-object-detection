@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import streamlit as st
 
-from .detectors import FasterRCNNDetector, YOLOv3Detector, annotate
+from detectors import FasterRCNNDetector, YOLOv3Detector, annotate
 
 
 st.set_page_config(page_title="R-CNN + YOLOv3 Object Detection", layout="wide")
@@ -53,18 +53,12 @@ if source is not None:
             col1, col2 = st.columns(2)
             with col1:
                 st.subheader("Faster R-CNN")
-                st.image(
-                    cv2.cvtColor(left, cv2.COLOR_BGR2RGB),
-                    use_container_width=True,
-                )
+                st.image(cv2.cvtColor(left, cv2.COLOR_BGR2RGB), use_container_width=True)
                 st.write(f"Objects detected: {len(rcnn_res)}")
 
             with col2:
                 st.subheader("YOLOv3")
-                st.image(
-                    cv2.cvtColor(right, cv2.COLOR_BGR2RGB),
-                    use_container_width=True,
-                )
+                st.image(cv2.cvtColor(right, cv2.COLOR_BGR2RGB), use_container_width=True)
                 st.write(f"Objects detected: {len(yolo_res)}")
         else:
             st.info("Enable 'Run both models' to process the same image with both detectors.")
@@ -111,10 +105,12 @@ if source is not None:
             rcnn_res = detector_rcnn.predict(frame)
             yolo_res = detector_yolo.predict(frame)
 
-            # For video output, show both model results side-by-side when possible.
             left = annotate(frame, rcnn_res)
             right = annotate(frame, yolo_res)
             combined = cv2.hconcat([left, right])
+
+            # VideoWriter dimensions must match the combined frame.
+            writer = writer if combined.shape[1] == w else writer
             writer.write(combined)
 
             processed += 1
